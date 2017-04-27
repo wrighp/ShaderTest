@@ -10,7 +10,7 @@ public class DepthIntersectionCamera : MonoBehaviour {
 	private RenderTexture swap;
 	private Camera cam;
 	// Use this for initialization
-	void Start () {
+	void OnEnable () {
 		cam = GetComponent<Camera> ();
 		SwapRenderTexture (MakeRenderTexture ());
 		if(swapRT){
@@ -74,7 +74,7 @@ public class DepthIntersectionCamera : MonoBehaviour {
 		}
 		cam.targetTexture = swapIn;
 	}
-	void OnDestroy(){
+	void OnDisable(){
 		SwapRenderTexture (null);
 		if(swapRT){
 			swap.Release ();
