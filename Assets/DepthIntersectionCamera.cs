@@ -6,25 +6,29 @@ using System;
 public class DepthIntersectionCamera : MonoBehaviour {
 	public int resolution = 128;
 	public Material depthMat;
+	public bool swapRT = true;
 	private RenderTexture swap;
 	private Camera cam;
 	// Use this for initialization
 	void Start () {
 		cam = GetComponent<Camera> ();
 		SwapRenderTexture (MakeRenderTexture ());
-		swap = MakeRenderTexture ();
+		if(swapRT){
+			swap = MakeRenderTexture ();
+		}
 
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
-		RenderTexture temp = swap;
-		swap = cam.targetTexture;
-		cam.targetTexture = temp;
-		depthMat.SetTexture ("_Previous", swap);
+		if(swapRT){
+			RenderTexture temp = swap;
+			swap = cam.targetTexture;
+			cam.targetTexture = temp;
+			depthMat.SetTexture ("_Previous", swap);
+		}
 	}
 	void OnRenderImage(RenderTexture src, RenderTexture dest) {
-		
 		Graphics.Blit(src, dest, depthMat);
 	}
 
@@ -69,11 +73,12 @@ public class DepthIntersectionCamera : MonoBehaviour {
 			cam.targetTexture.Release ();
 		}
 		cam.targetTexture = swapIn;
-
 	}
 	void OnDestroy(){
 		SwapRenderTexture (null);
-		swap.Release ();
+		if(swapRT){
+			swap.Release ();
+		}
 	}
 
 }
